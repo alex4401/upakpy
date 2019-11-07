@@ -1,5 +1,5 @@
 from .base import PakBaseObject
-from .consts import PAK_INDEX_SIZE, PAK_MAGIC_NUMBER
+from .consts import PAK_MAGIC_NUMBER, PAK_INDEX_SIZE
 from .coretypes import CompressedBlock, Guid, String, Table
 
 
