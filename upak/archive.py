@@ -10,6 +10,9 @@ class PakFile(PakBaseObject):
     def _deserialise(self, *args):
         self.stream.offset = self.stream.size - PAK_INDEX_SIZE
 
+        self._newField('key_guid', Guid(self))
+        self._newField('is_index_encrypted', self.stream.readUInt8())
+        assert self.is_index_encrypted
         self._newField('magic', self.stream.readUInt32())
         assert self.magic == PAK_MAGIC_NUMBER
         self._newField('version', self.stream.readUInt32())
