@@ -1,9 +1,11 @@
 import struct
 import uuid
+import zlib
 from typing import *
 
 from .base import PakBaseObject
-
+from thirdparty.purlovia.ue.stream import MemoryStream
+from .consts import COMPRESSION_ZLIB, COMPRESSION_NONE
 
 class Guid(PakBaseObject):
     value: uuid.UUID
@@ -59,7 +61,6 @@ class Table(PakBaseObject):
         return self.values[index]
 
     def __len__(self):
-
         return len(self.values)
 
 
@@ -67,3 +68,17 @@ class CompressedBlock(PakBaseObject):
     def _deserialise(self, *args):
         self._newField('start', self.stream.readUInt64())
         self._newField('end', self.stream.readUInt64())
+
+        data_stream = MemoryStream(self.stream, self.start, self.end - self.start)
+        self._load_data(data_stream)
+
+    def _load_data(self, stream: MemoryStream):
+        method = self.parent.parent.compression_method
+        compressed_data = stream.readBytes(len(stream))
+
+        if method == COMPRESSION_NONE:
+            self._newField('data', compressed_data)
+        elif method == COMPRESSION_ZLIB:
+            self._newField('data', zlib.decompress(compressed_data))
+        else:
+            raise RuntimeError('A record uses an unsupported compression method.')
