@@ -66,3 +66,4 @@ class Table(PakBaseObject):
 class CompressedBlock(PakBaseObject):
     def _deserialise(self, *args):
         self._newField('start', self.stream.readUInt64())
+        self._newField('end', self.stream.readUInt64())

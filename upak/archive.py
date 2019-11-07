@@ -36,11 +36,7 @@ class PakRecord(PakBaseObject):
         self._newField('compression_method', self.stream.readUInt32())
         self._newField('sha1', self.stream.readBytes(20))
         if self.compression_method != 0:
-            self._newField('compressed_block_count', self.stream.readInt32())
-            self._newField(
-                'compressed_blocks',
-                Table(self).deserialise(CompressedBlock,
-                                        self.compressed_block_count))
+            self._newField('compressed_blocks', Table(self).deserialise(CompressedBlock, self.stream.readInt32()))
         self._newField('is_encrypted', self.stream.readBool8())
         assert not self.is_encrypted
         self._newField('compressed_block_size', self.stream.readUInt32())
