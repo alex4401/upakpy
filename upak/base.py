@@ -4,6 +4,7 @@ from thirdparty.purlovia.ue.stream import MemoryStream
 class PakBaseObject(object):
     def __init__(self, owner: "PakBaseObject", stream=None):
         assert owner is not None, "Owner must be specified"
+        self.parent = owner
         self.stream: MemoryStream = stream or owner.stream
         self.field_values: Dict[str, Any] = {}
         self.start_offset: Optional[int] = None
